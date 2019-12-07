@@ -6,6 +6,8 @@ import os
 import ssl
 import uuid
 
+from timer import Timer
+
 import cv2
 from aiohttp import web
 from av import VideoFrame
@@ -17,6 +19,8 @@ ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
 pcs = set()
+
+TIMER_INTERVAL = 1
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -102,6 +106,7 @@ async def javascript(request):
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
+    refs = {'channel': None, 'timer': None}
 
     pc = RTCPeerConnection()
     pc_id = "PeerConnection(%s)" % uuid.uuid4()
@@ -119,8 +124,20 @@ async def offer(request):
     else:
         recorder = MediaBlackhole()
 
+    async def tick():
+        try:
+            if refs['channel'] is not None:
+                pass
+                # refs['channel'].send("test")
+        finally:
+            refs['timer'] = Timer(TIMER_INTERVAL, tick)
+
+    refs['timer'] = Timer(TIMER_INTERVAL, tick)
+
     @pc.on("datachannel")
     def on_datachannel(channel):
+        refs['channel'] = channel
+
         @channel.on("message")
         def on_message(message):
             if isinstance(message, str) and message.startswith("ping"):
@@ -130,6 +147,8 @@ async def offer(request):
     async def on_iceconnectionstatechange():
         log_info("ICE connection state is %s", pc.iceConnectionState)
         if pc.iceConnectionState == "failed":
+            if refs['timer'] is not None:
+                refs['timer'].cancel()
             await pc.close()
             pcs.discard(pc)
 
@@ -150,6 +169,9 @@ async def offer(request):
         async def on_ended():
             log_info("Track %s ended", track.kind)
             await recorder.stop()
+            if refs['timer'] is not None:
+                refs['timer'].cancel()
+            await pc.close()
 
     # handle offer
     await pc.setRemoteDescription(offer)
