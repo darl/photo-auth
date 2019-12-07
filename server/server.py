@@ -28,7 +28,7 @@ logging.basicConfig(
 
 
 async def index(request):
-    content = open(os.path.join(ROOT, "index.html"), "r").read()
+    content = open(os.path.join(ROOT, "./resources/test_client/index.html"), "r").read()
     return web.Response(content_type="text/html", text=content)
 
 async def index2(request):
@@ -37,7 +37,7 @@ async def index2(request):
 
 
 async def javascript(request):
-    content = open(os.path.join(ROOT, "client.js"), "r").read()
+    content = open(os.path.join(ROOT, "./resources/test_client/client.js"), "r").read()
     return web.Response(content_type="application/javascript", text=content)
 
 
@@ -47,7 +47,7 @@ async def offer(request):
 
     pc = RTCPeerConnection()
     pc_id = "PeerConnection(%s)" % uuid.uuid4()
-
+    #
     session = Session(State.INIT, pc)
     sessions.add(session)
 
@@ -56,12 +56,7 @@ async def offer(request):
 
     log_info("Created for %s", request.remote)
 
-    # prepare local media
-    player = MediaPlayer(os.path.join(ROOT, "demo-instruct.wav"))
-    if args.write_audio:
-        recorder = MediaRecorder(args.write_audio)
-    else:
-        recorder = MediaBlackhole()
+    recorder = MediaBlackhole()
 
     @pc.on("datachannel")
     def on_datachannel(channel):
@@ -84,10 +79,7 @@ async def offer(request):
     def on_track(track):
         log_info("Track %s received", track.kind)
 
-        if track.kind == "audio":
-            pc.addTrack(player.audio)
-            recorder.addTrack(track)
-        elif track.kind == "video":
+        if track.kind == "video":
             local_video = VideoTransformTrack(track, session)
             session.track = local_video
             pc.addTrack(local_video)

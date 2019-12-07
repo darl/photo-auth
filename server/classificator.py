@@ -7,8 +7,8 @@ from enum import Enum
 np.set_printoptions(suppress=True)
 
 # Load the model
-hand_model = tensorflow.keras.models.load_model('./hand_model.h5')
-passport_model = tensorflow.keras.models.load_model('./passport_model.h5')
+hand_model = tensorflow.keras.models.load_model('./resources/hand_model.h5')
+passport_model = tensorflow.keras.models.load_model('./resources/passport_model.h5')
 
 # Create the array of the right shape to feed into the keras model
 # The 'length' or number of images you can put into the array is
@@ -145,7 +145,7 @@ def predict(image, bounds, model_id):
     return idx == 0 and max_prediction > 0.8
 
 # Прогрев tensorflow. НЕ УБИРАТЬ
-img = Image.open('./image.jpg')
+img = Image.open('./resources/image.jpg')
 bounds, model_id = get_bounds(img, Position.HAND_BOTTOM_LEFT)
 predict(img, bounds, model_id)
 
