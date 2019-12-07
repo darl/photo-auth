@@ -26,6 +26,20 @@ pcs = set()
 TIMER_INTERVAL = 1
 
 
+class Refs:
+    """
+    Holds refs to session state
+    """
+    def __init__(self, channel, timer, track):
+        self.channel = channel
+        self.timer = timer
+        self.track = track
+
+    def cancel_timer(self):
+        if self.timer is not None:
+            self.timer.cancel()
+
+
 class VideoTransformTrack(MediaStreamTrack):
     """
     A video stream track that transforms frames from an another track.
@@ -38,9 +52,11 @@ class VideoTransformTrack(MediaStreamTrack):
         self.track = track
         self.transform = transform
         self.cd = time.time()
+        self.last_frame = None
 
     async def recv(self):
         frame = await self.track.recv()
+        self.last_frame = frame
 
         if time.time() - self.cd > 1:
             if classificator.predict(frame) == classificator.Position.TOP_LEFT:
@@ -118,7 +134,7 @@ async def javascript(request):
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
-    refs = {'channel': None, 'timer': None}
+    refs = Refs(None, None, None)
 
     pc = RTCPeerConnection()
     pc_id = "PeerConnection(%s)" % uuid.uuid4()
@@ -138,17 +154,17 @@ async def offer(request):
 
     async def tick():
         try:
-            if refs['channel'] is not None:
+            if refs.channel is not None:
                 pass
                 # refs['channel'].send("test")
         finally:
-            refs['timer'] = Timer(TIMER_INTERVAL, tick)
+            refs.timer = Timer(TIMER_INTERVAL, tick)
 
-    refs['timer'] = Timer(TIMER_INTERVAL, tick)
+    refs.timer = Timer(TIMER_INTERVAL, tick)
 
     @pc.on("datachannel")
     def on_datachannel(channel):
-        refs['channel'] = channel
+        refs.channel = channel
 
         @channel.on("message")
         def on_message(message):
@@ -159,8 +175,7 @@ async def offer(request):
     async def on_iceconnectionstatechange():
         log_info("ICE connection state is %s", pc.iceConnectionState)
         if pc.iceConnectionState == "failed":
-            if refs['timer'] is not None:
-                refs['timer'].cancel()
+            refs.cancel_timer()
             await pc.close()
             pcs.discard(pc)
 
@@ -175,14 +190,14 @@ async def offer(request):
             local_video = VideoTransformTrack(
                 track, transform=params["video_transform"]
             )
+            refs.track = local_video
             pc.addTrack(local_video)
 
         @track.on("ended")
         async def on_ended():
             log_info("Track %s ended", track.kind)
+            refs.cancel_timer()
             await recorder.stop()
-            if refs['timer'] is not None:
-                refs['timer'].cancel()
             await pc.close()
 
     # handle offer
