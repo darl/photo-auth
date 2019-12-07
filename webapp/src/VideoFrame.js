@@ -1,9 +1,14 @@
 import React from 'react';
 import './VideoFrame.css';
+import passport from './img/passport.png';
+import passportOk from './img/passport-ok.png';
+import passportMove from './img/passport-move.png';
+import passportMoveOk from './img/passport-move-ok.png';
+import hand from './img/hand.png';
+import handOk from './img/hand-ok.png';
 
 let pc;
 let dc;
-
 
 class App extends React.PureComponent {
     constructor() {
@@ -12,6 +17,14 @@ class App extends React.PureComponent {
         this.setVideoElement = elem => {
             this.videoElement = elem;
         }
+
+        this.state = {
+            currentStage: 'show_passport',
+        };
+    }
+
+    onMessage(evt) {
+        this.setState({ currentStage: evt.data })
     }
 
     async componentDidMount() {
@@ -28,7 +41,7 @@ class App extends React.PureComponent {
 
         // DATA chanel
         dc = pc.createDataChannel('chat', {"ordered": true});
-        dc.addEventListener('message', console.log);
+        dc.addEventListener('message', this.onMessage);
 
         this.videoElement.setAttribute('autoplay', '');
         this.videoElement.setAttribute('muted', '');
@@ -67,7 +80,7 @@ class App extends React.PureComponent {
             .then(() => {
                 const offer = pc.localDescription;
 
-                return fetch('//localhost:8080/offer', {
+                return fetch('/offer', {
                     body: JSON.stringify({
                         sdp: offer.sdp,
                         type: offer.type,
@@ -88,10 +101,44 @@ class App extends React.PureComponent {
             <div className="VideoFrame">
                 <video ref={ this.setVideoElement } className="VideoFrame__video" />
                 <div className="VideoFrame__overlay">
-                    test
+                    { this.renderOverlay() }
+                </div>
+                <div className="VideoFrame__bottom">
+                    <div className="VideoFrame__bottom-title">
+                        { this.renderBottomTitle() }
+                    </div>
+                    { this.renderSteps() }
                 </div>
             </div>
         );
+    }
+
+    renderOverlay() {
+        const { currentStage } = this.state;
+        switch(currentStage) {
+            case 'show_passport': {
+                return <img src={passport} className="VideoFrame__passport" />;
+            }
+            default: {
+                return null;
+            }
+        }
+    }
+
+    renderSteps () {
+        return (
+            <div className="VideoFrame__steps">
+                <div className="VideoFrame__step VideoFrame__step-1">1</div>
+                <div className="VideoFrame__step-sep"/>
+                <div className="VideoFrame__step VideoFrame__step-2">2</div>
+                <div className="VideoFrame__step-sep"/>
+                <div className="VideoFrame__step VideoFrame__step-3">3</div>
+            </div>
+        );
+    }
+
+    renderBottomTitle() {
+        return 'Покажи пасспорт';
     }
 }
 
