@@ -33,7 +33,7 @@ def right(width, height):
     if width > height:
         return int((width + height) / 2)
     else:
-        return width
+        return width - 1
 
 def top(width, height):
     if width > height:
@@ -43,7 +43,7 @@ def top(width, height):
 
 def bottom(width, height):
     if width > height:
-        return height
+        return height - 1
     else:
         return int((width + height) / 2)
 

@@ -7,6 +7,7 @@ import asyncio
 
 import classificator
 
+
 class VideoTransformTrack(MediaStreamTrack):
     """
     A video stream track that transforms frames from an another track.
@@ -14,42 +15,42 @@ class VideoTransformTrack(MediaStreamTrack):
 
     kind = "video"
 
-    def __init__(self, track, transform):
+    def __init__(self, track):
         super().__init__()  # don't forget this!
         self.track = track
-        self.transform = transform
+        self.color = None
         self.cd = time.time()
         self.last_frame = None
-        self.bounds = (0, 0, 1, 1)
+        self.bounds = (0,0,1,1)
 
     async def update_state(self, frame):
         res, bounds = classificator.predict(frame, classificator.Position.PASSPORT_RIGHT)
         self.bounds = bounds
         if res:
-            self.transform = ""
+            self.color = (0, 255, 0)
         else:
-            self.transform = "edges"
+            self.color = (0, 0, 255)
 
     async def recv(self):
         frame = await self.track.recv()
-        self.last_frame = frame
+        try:
+            self.last_frame = frame
 
-        if time.time() - self.cd > 1:
-            asyncio.create_task(self.update_state(frame))
-            self.cd = time.time()
+            if time.time() - self.cd > 0.6:
+                asyncio.create_task(self.update_state(frame))
+                self.cd = time.time()
 
-        if self.transform == "edges":
-            # perform edge detection
             img = frame.to_ndarray(format="bgr24")
-            img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
 
             left, top, right, bottom = self.bounds
-            img = cv2.rectangle(img, (left, top), (right, bottom), (255, 0, 0), 2)
+            img = cv2.rectangle(img, (left, top), (right, bottom), self.color, 1)
 
             # rebuild a VideoFrame, preserving timing information
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
             new_frame.pts = frame.pts
             new_frame.time_base = frame.time_base
             return new_frame
-        else:
+        except Exception as err:
+            print("Error in video transformer")
+            print(err)
             return frame
