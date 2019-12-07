@@ -86,7 +86,7 @@ class App extends React.PureComponent {
 
         }
 
-        if(!currentStage || !STEPS[newStage]) {
+        if (!currentStage || !STEPS[newStage]) {
             return;
         }
 
@@ -132,8 +132,11 @@ class App extends React.PureComponent {
         this.videoElement.setAttribute('muted', '');
         this.videoElement.setAttribute('playsinline', '');
 
-        const stream = await navigator.mediaDevices.getUserMedia({audio: false, video: { facingMode: "user" }});
-        stream.getTracks().forEach(function(track) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {facingMode: "user", width: {ideal: 320}, height: {ideal: 180}}
+        });
+        stream.getTracks().forEach(function (track) {
             pc.addTrack(track, stream);
         });
         this.videoElement.srcObject = stream;
@@ -184,38 +187,38 @@ class App extends React.PureComponent {
     render() {
         return (
             <div className="VideoFrame">
-                <video ref={ this.setVideoElement } className="VideoFrame__video" />
+                <video ref={this.setVideoElement} className="VideoFrame__video"/>
                 <div className="VideoFrame__overlay">
-                    { JSON.stringify(this.state) }
-                    { this.renderOverlay() }
+                    {JSON.stringify(this.state)}
+                    {this.renderOverlay()}
                 </div>
                 <div className="VideoFrame__bottom">
                     <div className="VideoFrame__bottom-title">
-                        { this.renderBottomTitle() }
+                        {this.renderBottomTitle()}
                     </div>
-                    { this.renderSteps() }
+                    {this.renderSteps()}
                 </div>
             </div>
         );
     }
 
     renderOverlay() {
-        const { currentStage } = this.state;
-        switch(currentStage) {
+        const {currentStage} = this.state;
+        switch (currentStage) {
             case 'show_passport': {
-                return <img src={ passport } className="VideoFrame__passport" />;
+                return <img src={passport} className="VideoFrame__passport"/>;
             }
             case 'show_passport_ok': {
-                return <img src={ passportOk } className="VideoFrame__passport" />;
+                return <img src={passportOk} className="VideoFrame__passport"/>;
             }
             case 'show_passport_2': {
-                return <img src={ passportMove } className="VideoFrame__passport" />;
+                return <img src={passportMove} className="VideoFrame__passport"/>;
             }
             case 'show_passport_3': {
-                return <img src={ passportMove } className="VideoFrame__passport" />;
+                return <img src={passportMove} className="VideoFrame__passport"/>;
             }
             case 'show_passport_3_ok': {
-                return <img src={ passportMoveOk } className="VideoFrame__passport" />;
+                return <img src={passportMoveOk} className="VideoFrame__passport"/>;
             }
             default: {
                 return null;
@@ -230,7 +233,7 @@ class App extends React.PureComponent {
                     [1, 2, 3].map((step) => {
                         const className = cn({
                             'VideoFrame__step': true,
-                            ['VideoFrame__step-' + step ]: true,
+                            ['VideoFrame__step-' + step]: true,
                             ['VideoFrame__step-active']: step <= this.state.step,
                         });
 
@@ -241,8 +244,8 @@ class App extends React.PureComponent {
 
                         return (
                             <>
-                                <div className={ className }>{ step }</div>
-                                { step < 3 && <div className={ classNameSep } />}
+                                <div className={className}>{step}</div>
+                                {step < 3 && <div className={classNameSep}/>}
                             </>
                         );
                         return step;
