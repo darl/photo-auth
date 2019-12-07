@@ -1,11 +1,7 @@
-import time
 
 import cv2
 from av import VideoFrame
 from aiortc import MediaStreamTrack
-import asyncio
-
-import classificator
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -15,35 +11,23 @@ class VideoTransformTrack(MediaStreamTrack):
 
     kind = "video"
 
-    def __init__(self, track):
+    def __init__(self, track, session):
         super().__init__()  # don't forget this!
+        self.session = session
         self.track = track
         self.color = None
-        self.cd = time.time()
-        self.last_frame = None
         self.bounds = None
-
-    async def update_state(self, frame):
-        res, bounds = classificator.predict(frame, classificator.Position.PASSPORT_RIGHT)
-        self.bounds = bounds
-        if res:
-            self.color = (0, 255, 0)
-        else:
-            self.color = (0, 0, 255)
 
     async def recv(self):
         frame = await self.track.recv()
+        self.session.last_frame = frame
         try:
-            self.last_frame = frame
-
-            if time.time() - self.cd > 0.6:
-                asyncio.create_task(self.update_state(frame))
-                self.cd = time.time()
+            self.color = (0, 255, 0) if self.session.res else (0, 0, 255)
 
             img = frame.to_ndarray(format="bgr24")
 
-            if self.bounds:
-                left, top, right, bottom = self.bounds
+            if self.session.bounds:
+                left, top, right, bottom = self.session.bounds
                 img = cv2.rectangle(img, (left, top), (right, bottom), self.color, 1)
 
             # rebuild a VideoFrame, preserving timing information

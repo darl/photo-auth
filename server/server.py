@@ -88,7 +88,7 @@ async def offer(request):
             pc.addTrack(player.audio)
             recorder.addTrack(track)
         elif track.kind == "video":
-            local_video = VideoTransformTrack(track)
+            local_video = VideoTransformTrack(track, session)
             session.track = local_video
             pc.addTrack(local_video)
 
