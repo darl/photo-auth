@@ -70,18 +70,27 @@ class App extends React.PureComponent {
             currentStage: 'show_passport',
             step: 1,
         };
+
+        this.onMessage = this.onMessage.bind(this);
     }
 
     onMessage(evt) {
         const currentStage = STEPS[this.state.currentStage];
         const newStage = evt.data;
 
+        console.log(newStage);
+
+        if (['abort', 'success']) {
+
+        }
+
         if(!currentStage || !STEPS[newStage]) {
             return;
         }
 
+        console.log(currentStage.success);
         if (currentStage.success && STEPS[currentStage.success]) {
-            this.setStep({
+            this.setState({
                 currentStage: currentStage.success,
                 step: STEPS[currentStage.success].step,
             });
@@ -91,7 +100,7 @@ class App extends React.PureComponent {
                     currentStage: newStage,
                     step: STEPS[newStage].step,
                 });
-            });
+            }, 2000);
         } else {
             this.setState({
                 currentStage: newStage,
@@ -122,7 +131,7 @@ class App extends React.PureComponent {
         this.videoElement.setAttribute('muted', '');
         this.videoElement.setAttribute('playsinline', '');
 
-        const stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+        const stream = await navigator.mediaDevices.getUserMedia({audio: false, video: { width: 200, height: 320 }});
         stream.getTracks().forEach(function(track) {
             pc.addTrack(track, stream);
         });
@@ -176,6 +185,7 @@ class App extends React.PureComponent {
             <div className="VideoFrame">
                 <video ref={ this.setVideoElement } className="VideoFrame__video" />
                 <div className="VideoFrame__overlay">
+                    { JSON.stringify(this.state) }
                     { this.renderOverlay() }
                 </div>
                 <div className="VideoFrame__bottom">
