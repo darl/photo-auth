@@ -25,7 +25,7 @@ class Session:
         self.res = 0
         self.size = None
         self.bounds = None
-        # self.hands
+        self.hands_count = 0
 
         self.state_start = time.time()
 
@@ -65,7 +65,11 @@ class Session:
                 elif self.state == State.SHOW_PASSPORT_3:
                     self.state = self.next_random_hand()
                 elif self.state.startswith("hand"):
-                    self.state = self.next_random_hand()
+                    if self.hands_count > 5:
+                        self.state = State.SUCCESS
+                    else:
+                        self.hands_count += 1
+                        self.state = self.next_random_hand()
 
             if self.channel and self.last_message != self.state:
                 self.channel.send(self.state)
