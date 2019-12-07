@@ -40,6 +40,12 @@ class App extends React.PureComponent {
         });
         this.videoElement.srcObject = stream;
 
+        pc.addEventListener('track', (evt) => {
+            if (evt.track.kind == 'video') {
+                this.videoElement.srcObject = evt.streams[0];
+            }
+        });
+
         pc
             .createOffer()
             .then((offer) => pc.setLocalDescription(offer))
@@ -72,10 +78,10 @@ class App extends React.PureComponent {
                     },
                     method: 'POST',
                 })
-            });
+            })
+            .then((response) => response.json())
+            .then((json) => pc.setRemoteDescription(json));
     }
-
-
 
     render() {
         return (
