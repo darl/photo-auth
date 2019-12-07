@@ -3,6 +3,8 @@ import cv2
 from av import VideoFrame
 from aiortc import MediaStreamTrack
 
+import classificator
+
 
 class VideoTransformTrack(MediaStreamTrack):
     """
@@ -29,6 +31,16 @@ class VideoTransformTrack(MediaStreamTrack):
             if self.session.bounds:
                 left, top, right, bottom = self.session.bounds
                 img = cv2.rectangle(img, (left, top), (right, bottom), self.color, 1)
+
+            for pos in classificator.Position:
+                b, _ = classificator.get_bounds(self.session.last_image, pos)
+                left, top, right, bottom = b
+                passport_color = (155, 0, 0)
+                hand_color = (155, 220, 0)
+                color = passport_color if pos.value > 3 else hand_color
+
+                img = cv2.rectangle(img, (left + 1, top + 1), (right - 1, bottom - 1), color, 1)
+
 
             # rebuild a VideoFrame, preserving timing information
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
