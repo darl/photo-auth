@@ -57,9 +57,9 @@ class Session:
                 elif self.state == State.SHOW_PASSPORT_2:
                     self.state = State.SHOW_PASSPORT_3
                 elif self.state == State.SHOW_PASSPORT_3:
-                    self.state = random.choice(State.HANDS)
+                    self.state = self.next_random_hand()
                 elif self.state.startswith("hand"):
-                    self.state = random.choice(State.HANDS)
+                    self.state = self.next_random_hand()
 
             if self.channel and self.last_message != self.state:
                 self.channel.send(self.state)
@@ -97,6 +97,12 @@ class Session:
             return classificator.Position.HAND_BOTTOM_RIGHT
         else:
             return None
+
+    def next_random_hand(self):
+        new_state = random.choice(State.HANDS)
+        while new_state == self.state:
+            new_state = random.choice(State.HANDS)
+        return new_state
 
     async def close(self):
         if self.timer:
