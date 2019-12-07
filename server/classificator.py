@@ -50,13 +50,13 @@ def bottom(width, height):
 
 def passport_top(width, height):
     if width > height:
-        return 0
+        return int(height / 4)
     else:
         return int(height / 2 - width / 4)
 
 def passport_bottom(width, height):
     if width > height:
-        return height
+        return int(3 * height / 4)
     else:
         return int(height / 2 + width / 4)
 

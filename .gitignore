@@ -2,3 +2,7 @@ venv
 .idea/
 __pycache__
 webapp/node_modules
+
+server/.DS_Store
+
+server/image.jpg
