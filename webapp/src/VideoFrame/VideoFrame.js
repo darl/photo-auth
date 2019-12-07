@@ -9,8 +9,54 @@ import passportMoveOk from './img/passport-move-ok.png';
 import hand from './img/hand.png';
 import handOk from './img/hand-ok.png';
 
-let pc;
-let dc;
+const STEPS = {
+    show_passport: {
+        step: 1,
+        text: 'Покажи паспорт',
+        success: 'show_passport_ok',
+    },
+    show_passport_ok: {
+        step: 1,
+        text: 'Отлично, переходим к следующему шагу',
+    },
+    show_passport_2: {
+        step: 2,
+        text: 'Перенесите паспорт слева направо',
+    },
+    show_passport_3: {
+        step: 2,
+        text: 'Перенесите паспорт слева направо',
+        success: 'show_passport_3_ok',
+    },
+    show_passport_3_ok: {
+        step: 2,
+        text: 'Перенесите паспорт слева направо',
+    },
+    'hand_top_left': {
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_top_right': {
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_bottom_left': {
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_bottom_right': {
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'abort': {
+        step: 1,
+        text: 'Ой, всё пошло не так'
+    },
+    'success': {
+        step: 3,
+        text: 'Всё хорошо',
+    }
+}
 
 class App extends React.PureComponent {
     constructor() {
@@ -27,10 +73,36 @@ class App extends React.PureComponent {
     }
 
     onMessage(evt) {
-        this.setState({ currentStage: evt.data })
+        const currentStage = STEPS[this.state.currentStage];
+        const newStage = evt.data;
+
+        if(!currentStage || !STEPS[newStage]) {
+            return;
+        }
+
+        if (currentStage.success && STEPS[currentStage.success]) {
+            this.setStep({
+                currentStage: currentStage.success,
+                step: STEPS[currentStage.success].step,
+            });
+
+            setTimeout(() => {
+                this.setState({
+                    currentStage: newStage,
+                    step: STEPS[newStage].step,
+                });
+            });
+        } else {
+            this.setState({
+                currentStage: newStage,
+                step: STEPS[newStage].step,
+            });
+        }
     }
 
     async componentDidMount() {
+        let pc;
+        let dc;
 
         // Create Peer Connection
         var config = {
@@ -57,7 +129,7 @@ class App extends React.PureComponent {
         this.videoElement.srcObject = stream;
 
         pc.addEventListener('track', (evt) => {
-            if (evt.track.kind == 'video') {
+            if (evt.track.kind === 'video') {
                 this.videoElement.srcObject = evt.streams[0];
             }
         });
@@ -120,7 +192,19 @@ class App extends React.PureComponent {
         const { currentStage } = this.state;
         switch(currentStage) {
             case 'show_passport': {
-                return <img src={passport} className="VideoFrame__passport" />;
+                return <img src={ passport } className="VideoFrame__passport" />;
+            }
+            case 'show_passport_ok': {
+                return <img src={ passportOk } className="VideoFrame__passport" />;
+            }
+            case 'show_passport_2': {
+                return <img src={ passportMove } className="VideoFrame__passport" />;
+            }
+            case 'show_passport_3': {
+                return <img src={ passportMove } className="VideoFrame__passport" />;
+            }
+            case 'show_passport_3_ok': {
+                return <img src={ passportMoveOk } className="VideoFrame__passport" />;
             }
             default: {
                 return null;
