@@ -5,6 +5,7 @@ import classificator
 from timer import Timer
 
 TIMER_INTERVAL = 0.6
+RESULT_THRESHOLD = 2
 
 
 class Session:
@@ -17,25 +18,30 @@ class Session:
         self.pc = pc
         self.channel = None
         self.track = None
-        self.last_frame = None
+        self.last_image = None
         self.timer = Timer(TIMER_INTERVAL, self.tick)
         self.last_message = None
-        self.res = None
+        self.res = 0
         self.bounds = None
         # self.hands
 
         self.state_start = time.time()
 
-    async def tick(self):
-        if self.last_frame:
+    def get_bounds(self):
+        return classificator.get_bounds(self.last_image, self.get_classificator_position(self.state))
+
+    def update_resolution(self):
+        if self.last_image:
             try:
-                position = self.get_classificator_position(self.state)
-                image = self.last_frame.to_image()
-                self.bounds, model_id = classificator.get_bounds(image, position)
-                self.res = classificator.predict(image, self.bounds, model_id)
+                self.bounds, model_id = self.get_bounds()
+                if classificator.predict(self.last_image, self.bounds, model_id):
+                    self.res += 1
+                else:
+                    self.res = 0
             except Exception as err:
                 print(err)
 
+    async def update_state(self):
         try:
             elapsed = time.time() - self.state_start
             if self.state.startswith("show") and elapsed > State.SHOW_TIMEOUT:
@@ -43,8 +49,8 @@ class Session:
             if self.state.startswith("hand") and elapsed > State.HAND_TIMEOUT:
                 self.state = State.ABORT
 
-            if self.res:
-                self.res = False
+            if self.state != State.ABORT and self.res >= RESULT_THRESHOLD:
+                self.res = 0
                 self.state_start = time.time()
                 if self.state == State.SHOW_PASSPORT:
                     self.state = State.SHOW_PASSPORT_2
@@ -58,13 +64,19 @@ class Session:
             if self.channel and self.last_message != self.state:
                 self.channel.send(self.state)
                 self.last_message = self.state
+                self.bounds, _ = self.get_bounds()
 
             if self.state == State.ABORT or self.state == State.SUCCESS:
                 await self.close()
         except Exception as err:
             print(err)
-        finally:
-            self.timer = Timer(TIMER_INTERVAL, self.tick)
+
+    async def tick(self):
+        if time.time() - self.state_start > TIMER_INTERVAL*2:
+            self.update_resolution()
+            await self.update_state()
+
+        self.timer = Timer(TIMER_INTERVAL, self.tick)
 
     @staticmethod
     def get_classificator_position(state):

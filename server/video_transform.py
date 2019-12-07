@@ -20,9 +20,9 @@ class VideoTransformTrack(MediaStreamTrack):
 
     async def recv(self):
         frame = await self.track.recv()
-        self.session.last_frame = frame
+        self.session.last_image = frame.to_image()
         try:
-            self.color = (0, 255, 0) if self.session.res else (0, 0, 255)
+            self.color = (0, 255, 0) if self.session.res > 0 else (0, 0, 255)
 
             img = frame.to_ndarray(format="bgr24")
 
