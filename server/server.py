@@ -5,6 +5,8 @@ import logging
 import os
 import ssl
 import uuid
+import classificator
+import time
 
 from timer import Timer
 
@@ -14,6 +16,7 @@ from av import VideoFrame
 
 from aiortc import MediaStreamTrack, RTCPeerConnection, RTCSessionDescription
 from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRecorder
+
 
 ROOT = os.path.dirname(__file__)
 
@@ -34,9 +37,18 @@ class VideoTransformTrack(MediaStreamTrack):
         super().__init__()  # don't forget this!
         self.track = track
         self.transform = transform
+        self.cd = time.time()
 
     async def recv(self):
         frame = await self.track.recv()
+
+        if time.time() - self.cd > 1:
+            if classificator.predict(frame) == classificator.Position.TOP_LEFT:
+            # if self.transform == "edges":
+                self.transform = ""
+            else:
+                self.transform = "edges"
+            self.cd = time.time()
 
         if self.transform == "cartoon":
             img = frame.to_ndarray(format="bgr24")
