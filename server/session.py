@@ -1,5 +1,6 @@
 import random
 import time
+import logging
 
 import classificator
 from timer import Timer
@@ -22,6 +23,7 @@ class Session:
         self.timer = Timer(TIMER_INTERVAL, self.tick)
         self.last_message = None
         self.res = 0
+        self.size = None
         self.bounds = None
         # self.hands
 
@@ -33,6 +35,10 @@ class Session:
     def update_resolution(self):
         if self.last_image:
             try:
+                if self.size != self.last_image.size:
+                    self.size = self.last_image.size
+                    logging.info(self.size)
+
                 self.bounds, model_id = self.get_bounds()
                 if classificator.predict(self.last_image, self.bounds, model_id):
                     self.res += 1
