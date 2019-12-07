@@ -21,7 +21,7 @@ class VideoTransformTrack(MediaStreamTrack):
         self.color = None
         self.cd = time.time()
         self.last_frame = None
-        self.bounds = (0,0,1,1)
+        self.bounds = None
 
     async def update_state(self, frame):
         res, bounds = classificator.predict(frame, classificator.Position.PASSPORT_RIGHT)
@@ -42,8 +42,9 @@ class VideoTransformTrack(MediaStreamTrack):
 
             img = frame.to_ndarray(format="bgr24")
 
-            left, top, right, bottom = self.bounds
-            img = cv2.rectangle(img, (left, top), (right, bottom), self.color, 1)
+            if self.bounds:
+                left, top, right, bottom = self.bounds
+                img = cv2.rectangle(img, (left, top), (right, bottom), self.color, 1)
 
             # rebuild a VideoFrame, preserving timing information
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
