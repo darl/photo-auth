@@ -47,7 +47,7 @@ class State:
     SHOW_PASSPORT_2 = "show_passport_2"
     SHOW_PASSPORT_3 = "show_passport_3"
 
-    SHOW_TIMEOUT = 30
+    SHOW_TIMEOUT = 300
 
     HAND_TOP_LEFT = "hand_top_left"
     HAND_TOP_right = "hand_top_right"
