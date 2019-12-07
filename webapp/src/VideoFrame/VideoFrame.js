@@ -78,7 +78,9 @@ class App extends React.PureComponent {
         const currentStage = STEPS[this.state.currentStage];
         const newStage = evt.data;
 
-        console.log(newStage);
+        if (newStage === this.state.currentStage) {
+            return;
+        }
 
         if (['abort', 'success']) {
 
@@ -88,7 +90,6 @@ class App extends React.PureComponent {
             return;
         }
 
-        console.log(currentStage.success);
         if (currentStage.success && STEPS[currentStage.success]) {
             this.setState({
                 currentStage: currentStage.success,
