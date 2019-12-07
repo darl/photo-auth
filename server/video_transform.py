@@ -67,6 +67,8 @@ class VideoTransformTrack(MediaStreamTrack):
             img = frame.to_ndarray(format="bgr24")
             img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
 
+            img = cv2.rectangle(img, (5, 5), (50, 50), (255, 0, 0), 2)
+
             # rebuild a VideoFrame, preserving timing information
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
             new_frame.pts = frame.pts
