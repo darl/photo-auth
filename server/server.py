@@ -7,7 +7,6 @@ import ssl
 import uuid
 
 from session import Session
-from timer import Timer
 
 from aiohttp import web
 
@@ -20,8 +19,6 @@ ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
 pcs = set()
-
-TIMER_INTERVAL = 1
 
 
 async def index(request):
@@ -54,16 +51,6 @@ async def offer(request):
         recorder = MediaRecorder(args.write_audio)
     else:
         recorder = MediaBlackhole()
-
-    async def tick():
-        try:
-            if session.channel is not None:
-                pass
-                # session['channel'].send("test")
-        finally:
-            session.timer = Timer(TIMER_INTERVAL, tick)
-
-    session.timer = Timer(TIMER_INTERVAL, tick)
 
     @pc.on("datachannel")
     def on_datachannel(channel):
