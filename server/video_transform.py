@@ -23,7 +23,7 @@ class VideoTransformTrack(MediaStreamTrack):
         self.bounds = (0, 0, 1, 1)
 
     async def update_state(self, frame):
-        res, bounds = classificator.predict(frame, classificator.Position.HAND_TOP_LEFT)
+        res, bounds = classificator.predict(frame, classificator.Position.PASSPORT_RIGHT)
         self.bounds = bounds
         if res:
             self.transform = ""
@@ -38,7 +38,7 @@ class VideoTransformTrack(MediaStreamTrack):
             asyncio.create_task(self.update_state(frame))
             self.cd = time.time()
 
-        elif self.transform == "edges":
+        if self.transform == "edges":
             # perform edge detection
             img = frame.to_ndarray(format="bgr24")
             img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
