@@ -69,11 +69,11 @@ class Session:
     @staticmethod
     def get_classificator_position(state):
         if state == State.SHOW_PASSPORT:
-            return classificator.Position.PASSPORT_LEFT
+            return classificator.Position.PASSPORT_CLOSE
         elif state == State.SHOW_PASSPORT_2:
             return classificator.Position.PASSPORT_RIGHT
         elif state == State.SHOW_PASSPORT_3:
-            return classificator.Position.PASSPORT_CLOSE
+            return classificator.Position.PASSPORT_LEFT
 
         elif state == State.HAND_TOP_LEFT:
             return classificator.Position.HAND_TOP_LEFT
