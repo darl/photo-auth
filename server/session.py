@@ -7,6 +7,7 @@ from timer import Timer
 
 TIMER_INTERVAL = 0.6
 RESULT_THRESHOLD = 2
+SUCCESS_HANDS_COUNT = 5
 
 
 class Session:
@@ -25,7 +26,7 @@ class Session:
         self.res = 0
         self.size = None
         self.bounds = None
-        self.hands_count = 0
+        self.hands_count = 1
 
         self.state_start = time.time()
 
@@ -65,7 +66,7 @@ class Session:
                 elif self.state == State.SHOW_PASSPORT_3:
                     self.state = self.next_random_hand()
                 elif self.state.startswith("hand"):
-                    if self.hands_count > 5:
+                    if self.hands_count >= SUCCESS_HANDS_COUNT:
                         self.state = State.SUCCESS
                     else:
                         self.hands_count += 1
