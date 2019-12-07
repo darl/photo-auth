@@ -100,6 +100,7 @@ async def offer(request):
 
     return web.Response(
         content_type="application/json",
+        headers={'Access-Control-Allow-Origin': '*'}, #TODO: for dev
         text=json.dumps(
             {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
         ),
