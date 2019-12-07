@@ -6,6 +6,7 @@ import os
 import ssl
 import uuid
 
+from session import Session
 from timer import Timer
 
 from aiohttp import web
@@ -23,20 +24,6 @@ pcs = set()
 TIMER_INTERVAL = 1
 
 
-class Refs:
-    """
-    Holds refs to session state
-    """
-    def __init__(self, channel, timer, track):
-        self.channel = channel
-        self.timer = timer
-        self.track = track
-
-    def cancel_timer(self):
-        if self.timer is not None:
-            self.timer.cancel()
-
-
 async def index(request):
     content = open(os.path.join(ROOT, "index.html"), "r").read()
     return web.Response(content_type="text/html", text=content)
@@ -50,7 +37,7 @@ async def javascript(request):
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
-    refs = Refs(None, None, None)
+    session = Session()
 
     pc = RTCPeerConnection()
     pc_id = "PeerConnection(%s)" % uuid.uuid4()
@@ -70,17 +57,17 @@ async def offer(request):
 
     async def tick():
         try:
-            if refs.channel is not None:
+            if session.channel is not None:
                 pass
-                # refs['channel'].send("test")
+                # session['channel'].send("test")
         finally:
-            refs.timer = Timer(TIMER_INTERVAL, tick)
+            session.timer = Timer(TIMER_INTERVAL, tick)
 
-    refs.timer = Timer(TIMER_INTERVAL, tick)
+    session.timer = Timer(TIMER_INTERVAL, tick)
 
     @pc.on("datachannel")
     def on_datachannel(channel):
-        refs.channel = channel
+        session.channel = channel
 
         @channel.on("message")
         def on_message(message):
@@ -91,7 +78,7 @@ async def offer(request):
     async def on_iceconnectionstatechange():
         log_info("ICE connection state is %s", pc.iceConnectionState)
         if pc.iceConnectionState == "failed":
-            refs.cancel_timer()
+            session.close()
             await pc.close()
             pcs.discard(pc)
 
@@ -106,13 +93,13 @@ async def offer(request):
             local_video = VideoTransformTrack(
                 track, transform=params["video_transform"]
             )
-            refs.track = local_video
+            session.track = local_video
             pc.addTrack(local_video)
 
         @track.on("ended")
         async def on_ended():
             log_info("Track %s ended", track.kind)
-            refs.cancel_timer()
+            session.close()
             await recorder.stop()
             await pc.close()
 
