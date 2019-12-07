@@ -1,5 +1,6 @@
 import tensorflow.keras
 import numpy as np
+from PIL import Image
 from enum import Enum
 
 # Disable scientific notation for clarity
@@ -143,7 +144,11 @@ def predict(image, bounds, model_id):
     # 0 -> hand 1 -> no_hand
     return idx == 0 and max_prediction > 0.8
 
-# Replace this with the path to your image
-# img = Image.open('./image.jpg')
-#
-# print(predict_inner(img, Position.HAND_BOTTOM_LEFT))
+# Прогрев tensorflow. НЕ УБИРАТЬ
+img = Image.open('./image.jpg')
+bounds, model_id = get_bounds(img, Position.HAND_BOTTOM_LEFT)
+predict(img, bounds, model_id)
+
+bounds, model_id = get_bounds(img, Position.PASSPORT_RIGHT)
+predict(img, bounds, model_id)
+print("CASH WARM UP")
