@@ -132,7 +132,7 @@ class App extends React.PureComponent {
         this.videoElement.setAttribute('muted', '');
         this.videoElement.setAttribute('playsinline', '');
 
-        const stream = await navigator.mediaDevices.getUserMedia({audio: false, video: { width: 200, height: 320 }});
+        const stream = await navigator.mediaDevices.getUserMedia({audio: false, video: { facingMode: "user" }});
         stream.getTracks().forEach(function(track) {
             pc.addTrack(track, stream);
         });
