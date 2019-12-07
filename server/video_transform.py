@@ -1,6 +1,7 @@
 import time
 
 import cv2
+from av import VideoFrame
 from aiortc import MediaStreamTrack
 
 import classificator
@@ -26,7 +27,7 @@ class VideoTransformTrack(MediaStreamTrack):
 
         if time.time() - self.cd > 1:
             if classificator.predict(frame) == classificator.Position.TOP_LEFT:
-            # if self.transform == "edges":
+                # if self.transform == "edges":
                 self.transform = ""
             else:
                 self.transform = "edges"
