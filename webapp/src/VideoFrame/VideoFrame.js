@@ -1,5 +1,7 @@
 import React from 'react';
 import './VideoFrame.css';
+import cn from 'classnames';
+
 import passport from './img/passport.png';
 import passportOk from './img/passport-ok.png';
 import passportMove from './img/passport-move.png';
@@ -20,6 +22,7 @@ class App extends React.PureComponent {
 
         this.state = {
             currentStage: 'show_passport',
+            step: 1,
         };
     }
 
@@ -125,14 +128,31 @@ class App extends React.PureComponent {
         }
     }
 
-    renderSteps () {
+    renderSteps() {
         return (
             <div className="VideoFrame__steps">
-                <div className="VideoFrame__step VideoFrame__step-1">1</div>
-                <div className="VideoFrame__step-sep"/>
-                <div className="VideoFrame__step VideoFrame__step-2">2</div>
-                <div className="VideoFrame__step-sep"/>
-                <div className="VideoFrame__step VideoFrame__step-3">3</div>
+                {
+                    [1, 2, 3].map((step) => {
+                        const className = cn({
+                            'VideoFrame__step': true,
+                            ['VideoFrame__step-' + step ]: true,
+                            ['VideoFrame__step-active']: step <= this.state.step,
+                        });
+
+                        const classNameSep = cn({
+                            'VideoFrame__step-sep': true,
+                            'VideoFrame__step-sep-active': step < this.state.step,
+                        });
+
+                        return (
+                            <>
+                                <div className={ className }>{ step }</div>
+                                { step < 3 && <div className={ classNameSep } />}
+                            </>
+                        );
+                        return step;
+                    })
+                }
             </div>
         );
     }
