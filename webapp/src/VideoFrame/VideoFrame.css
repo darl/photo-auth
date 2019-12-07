@@ -15,7 +15,7 @@ body, html {
      width: 100vw;
     /*height: 100vh;*/
     position: absolute;
-    transform: scale(-1, 1);
+    transform: translate(-50%, -50%) scale(-1, 1);
 }
 
 .VideoFrame__overlay {

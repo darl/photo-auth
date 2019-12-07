@@ -33,18 +33,38 @@ const STEPS = {
         text: 'Перенесите паспорт слева направо',
     },
     'hand_top_left': {
+        success: 'hand_top_left_ok',
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_top_left_ok': {
         step: 3,
         text: 'Поместите руку в указанную позицию',
     },
     'hand_top_right': {
+        success: 'hand_top_right_ok',
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_top_right_ok': {
         step: 3,
         text: 'Поместите руку в указанную позицию',
     },
     'hand_bottom_left': {
+        success: 'hand_bottom_left_ok',
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_bottom_left_ok': {
         step: 3,
         text: 'Поместите руку в указанную позицию',
     },
     'hand_bottom_right': {
+        success: 'hand_bottom_right_ok',
+        step: 3,
+        text: 'Поместите руку в указанную позицию',
+    },
+    'hand_bottom_right_ok': {
         step: 3,
         text: 'Поместите руку в указанную позицию',
     },
@@ -101,7 +121,8 @@ class App extends React.PureComponent {
                     currentStage: newStage,
                     step: STEPS[newStage].step,
                 });
-            }, 2000);
+            }, 1500);
+
         } else {
             this.setState({
                 currentStage: newStage,
@@ -206,20 +227,52 @@ class App extends React.PureComponent {
         const {currentStage} = this.state;
         switch (currentStage) {
             case 'show_passport': {
-                return <img src={passport} className="VideoFrame__passport"/>;
+                return <img src={ passport } className="VideoFrame__passport"/>;
             }
             case 'show_passport_ok': {
-                return <img src={passportOk} className="VideoFrame__passport"/>;
+                return <img src={ passportOk } className="VideoFrame__passport"/>;
             }
             case 'show_passport_2': {
-                return <img src={passportMove} className="VideoFrame__passport"/>;
+                return <img src={ passportMove } className="VideoFrame__passport"/>;
             }
             case 'show_passport_3': {
-                return <img src={passportMove} className="VideoFrame__passport"/>;
+                return <img src={ passportMove } className="VideoFrame__passport"/>;
             }
             case 'show_passport_3_ok': {
-                return <img src={passportMoveOk} className="VideoFrame__passport"/>;
+                return <img src={ passportMoveOk } className="VideoFrame__passport"/>;
             }
+            case 'show_passport_3_ok': {
+                return <img src={ passportMoveOk } className="VideoFrame__passport"/>;
+            }
+
+            case 'hand_top_left': {
+                return <img src={ hand } className="VideoFrame__hand_top_left"/>;
+            }
+            case 'hand_top_left_ok': {
+                return <img src={ handOk } className="VideoFrame__hand_top_left_ok"/>;
+            }
+
+            case 'hand_top_right': {
+                return <img src={ hand } className="VideoFrame__hand_top_right"/>;
+            }
+            case 'hand_top_right_ok': {
+                return <img src={ handOk } className="VideoFrame__hand_top_right_ok"/>;
+            }
+
+            case 'hand_bottom_left': {
+                return <img src={ hand } className="VideoFrame__hand_bottom_left"/>;
+            }
+            case 'hand_bottom_left_ok': {
+                return <img src={ handOk } className="VideoFrame__hand_bottom_left_ok"/>;
+            }
+
+            case 'hand_bottom_right': {
+                return <img src={ hand } className="VideoFrame__hand_bottom_right"/>;
+            }
+            case 'hand_bottom_right_ok': {
+                return <img src={ handOk } className="VideoFrame__hand_bottom_right_ok"/>;
+            }
+
             default: {
                 return null;
             }
