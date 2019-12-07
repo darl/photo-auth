@@ -6,7 +6,7 @@ import os
 import ssl
 import uuid
 
-from session import Session
+from session import Session, State
 
 from aiohttp import web
 
@@ -18,7 +18,7 @@ from video_transform import VideoTransformTrack
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
-pcs = set()
+sessions = set()
 
 
 async def index(request):
@@ -34,11 +34,12 @@ async def javascript(request):
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
-    session = Session()
 
     pc = RTCPeerConnection()
     pc_id = "PeerConnection(%s)" % uuid.uuid4()
-    pcs.add(pc)
+
+    session = Session(State.INIT, pc)
+    sessions.add(session)
 
     def log_info(msg, *args):
         logger.info(pc_id + " " + msg, *args)
@@ -65,9 +66,9 @@ async def offer(request):
     async def on_iceconnectionstatechange():
         log_info("ICE connection state is %s", pc.iceConnectionState)
         if pc.iceConnectionState == "failed":
-            session.close()
+            await session.close()
             await pc.close()
-            pcs.discard(pc)
+            sessions.discard(session)
 
     @pc.on("track")
     def on_track(track):
@@ -86,9 +87,8 @@ async def offer(request):
         @track.on("ended")
         async def on_ended():
             log_info("Track %s ended", track.kind)
-            session.close()
             await recorder.stop()
-            await pc.close()
+            await session.close()
 
     # handle offer
     await pc.setRemoteDescription(offer)
@@ -107,10 +107,10 @@ async def offer(request):
 
 
 async def on_shutdown(app):
-    # close peer connections
-    coros = [pc.close() for pc in pcs]
-    await asyncio.gather(*coros)
-    pcs.clear()
+    # close sessions
+    closers = [session.close() for session in sessions]
+    await asyncio.gather(*closers)
+    sessions.clear()
 
 
 if __name__ == "__main__":
