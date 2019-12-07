@@ -100,7 +100,6 @@ async def offer(request):
 
     return web.Response(
         content_type="application/json",
-        headers={'Access-Control-Allow-Origin': '*'}, #TODO: for dev
         text=json.dumps(
             {"sdp": pc.localDescription.sdp, "type": pc.localDescription.type}
         ),
@@ -112,6 +111,13 @@ async def on_shutdown(app):
     closers = [session.close() for session in sessions]
     await asyncio.gather(*closers)
     sessions.clear()
+
+
+@web.middleware
+async def cors(request, handler):
+    response = await handler(request)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 if __name__ == "__main__":
@@ -138,7 +144,7 @@ if __name__ == "__main__":
     else:
         ssl_context = None
 
-    app = web.Application()
+    app = web.Application(middlewares=[cors])
     app.on_shutdown.append(on_shutdown)
     app.router.add_get("/", index)
     app.router.add_get("/client.js", javascript)
