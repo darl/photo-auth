@@ -3,9 +3,9 @@ import time
 import cv2
 from av import VideoFrame
 from aiortc import MediaStreamTrack
+import asyncio
 
 import classificator
-
 
 class VideoTransformTrack(MediaStreamTrack):
     """
@@ -20,17 +20,22 @@ class VideoTransformTrack(MediaStreamTrack):
         self.transform = transform
         self.cd = time.time()
         self.last_frame = None
+        self.bounds = (0, 0, 1, 1)
+
+    async def update_state(self, frame):
+        res, bounds = classificator.predict(frame, classificator.Position.HAND_TOP_LEFT)
+        self.bounds = bounds
+        if res:
+            self.transform = ""
+        else:
+            self.transform = "edges"
 
     async def recv(self):
         frame = await self.track.recv()
         self.last_frame = frame
 
         if time.time() - self.cd > 1:
-            if classificator.predict(frame) == classificator.Position.TOP_LEFT:
-                # if self.transform == "edges":
-                self.transform = ""
-            else:
-                self.transform = "edges"
+            asyncio.create_task(self.update_state(frame))
             self.cd = time.time()
 
         if self.transform == "cartoon":
@@ -67,7 +72,8 @@ class VideoTransformTrack(MediaStreamTrack):
             img = frame.to_ndarray(format="bgr24")
             img = cv2.cvtColor(cv2.Canny(img, 100, 200), cv2.COLOR_GRAY2BGR)
 
-            img = cv2.rectangle(img, (5, 5), (50, 50), (255, 0, 0), 2)
+            left, top, right, bottom = self.bounds
+            img = cv2.rectangle(img, (left, top), (right, bottom), (255, 0, 0), 2)
 
             # rebuild a VideoFrame, preserving timing information
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
