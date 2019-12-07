@@ -136,8 +136,10 @@ class App extends React.PureComponent {
         let dc;
 
         // Create Peer Connection
-        var config = {
-            sdpSemantics: 'unified-plan'
+        let config = {
+            sdpSemantics: 'unified-plan',
+            iceServers: [{urls: ['stun:stun.l.google.com:19302']}]
+
         };
         pc = new RTCPeerConnection(config);
         // register some listeners to help debugging
