@@ -6,8 +6,7 @@ import os
 import ssl
 import uuid
 
-from session import Session
-from timer import Timer
+from session import Session, State
 
 from aiohttp import web
 
@@ -19,13 +18,15 @@ from video_transform import VideoTransformTrack
 ROOT = os.path.dirname(__file__)
 
 logger = logging.getLogger("pc")
-pcs = set()
-
-TIMER_INTERVAL = 1
+sessions = set()
 
 
 async def index(request):
     content = open(os.path.join(ROOT, "index.html"), "r").read()
+    return web.Response(content_type="text/html", text=content)
+
+async def index2(request):
+    content = open(os.path.join(ROOT, "../webapp/build/index.html"), "r").read()
     return web.Response(content_type="text/html", text=content)
 
 
@@ -37,11 +38,12 @@ async def javascript(request):
 async def offer(request):
     params = await request.json()
     offer = RTCSessionDescription(sdp=params["sdp"], type=params["type"])
-    session = Session()
 
     pc = RTCPeerConnection()
     pc_id = "PeerConnection(%s)" % uuid.uuid4()
-    pcs.add(pc)
+
+    session = Session(State.INIT, pc)
+    sessions.add(session)
 
     def log_info(msg, *args):
         logger.info(pc_id + " " + msg, *args)
@@ -54,16 +56,6 @@ async def offer(request):
         recorder = MediaRecorder(args.write_audio)
     else:
         recorder = MediaBlackhole()
-
-    async def tick():
-        try:
-            if session.channel is not None:
-                pass
-                # session['channel'].send("test")
-        finally:
-            session.timer = Timer(TIMER_INTERVAL, tick)
-
-    session.timer = Timer(TIMER_INTERVAL, tick)
 
     @pc.on("datachannel")
     def on_datachannel(channel):
@@ -78,9 +70,9 @@ async def offer(request):
     async def on_iceconnectionstatechange():
         log_info("ICE connection state is %s", pc.iceConnectionState)
         if pc.iceConnectionState == "failed":
-            session.close()
+            await session.close()
             await pc.close()
-            pcs.discard(pc)
+            sessions.discard(session)
 
     @pc.on("track")
     def on_track(track):
@@ -99,9 +91,8 @@ async def offer(request):
         @track.on("ended")
         async def on_ended():
             log_info("Track %s ended", track.kind)
-            session.close()
             await recorder.stop()
-            await pc.close()
+            await session.close()
 
     # handle offer
     await pc.setRemoteDescription(offer)
@@ -120,10 +111,17 @@ async def offer(request):
 
 
 async def on_shutdown(app):
-    # close peer connections
-    coros = [pc.close() for pc in pcs]
-    await asyncio.gather(*coros)
-    pcs.clear()
+    # close sessions
+    closers = [session.close() for session in sessions]
+    await asyncio.gather(*closers)
+    sessions.clear()
+
+
+@web.middleware
+async def cors(request, handler):
+    response = await handler(request)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 if __name__ == "__main__":
@@ -150,9 +148,11 @@ if __name__ == "__main__":
     else:
         ssl_context = None
 
-    app = web.Application()
+    app = web.Application(middlewares=[cors])
     app.on_shutdown.append(on_shutdown)
+    app.router.add_static("/static/", "../webapp/build/static")
     app.router.add_get("/", index)
+    app.router.add_get("/2", index2)
     app.router.add_get("/client.js", javascript)
     app.router.add_post("/offer", offer)
     web.run_app(app, access_log=None, port=args.port, ssl_context=ssl_context)
