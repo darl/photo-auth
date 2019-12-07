@@ -20,6 +20,12 @@ ROOT = os.path.dirname(__file__)
 logger = logging.getLogger("pc")
 sessions = set()
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s,%(msecs)d %(levelname)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+
 
 async def index(request):
     content = open(os.path.join(ROOT, "index.html"), "r").read()
