@@ -36,7 +36,7 @@ class Session:
 
     def get_bounds(self):
         position = self.get_classificator_position(self.state)
-        if position is None:
+        if position is None or self.last_image is None:
             return None, None
         return classificator.get_bounds(self.last_image, position)
 
