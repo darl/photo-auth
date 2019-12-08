@@ -1,9 +1,12 @@
+import logging
 
 import cv2
-from av import VideoFrame
 from aiortc import MediaStreamTrack
+from av import VideoFrame
 
 import classificator
+
+logger = logging.getLogger("transformer")
 
 
 class VideoTransformTrack(MediaStreamTrack):
@@ -47,7 +50,6 @@ class VideoTransformTrack(MediaStreamTrack):
             new_frame.pts = frame.pts
             new_frame.time_base = frame.time_base
             return new_frame
-        except Exception as err:
-            print("Error in video transformer")
-            print(err)
+        except Exception:
+            logger.exception("Error in video transformer")
             return frame

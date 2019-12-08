@@ -3,6 +3,10 @@ import numpy as np
 from PIL import Image
 from enum import Enum
 
+import logging
+
+logger = logging.getLogger("classificator")
+
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
@@ -151,4 +155,4 @@ predict(img, bounds, model_id)
 
 bounds, model_id = get_bounds(img, Position.PASSPORT_RIGHT)
 predict(img, bounds, model_id)
-print("CASH WARM UP")
+logger.info("CASH WARM UP")

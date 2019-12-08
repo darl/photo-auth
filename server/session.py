@@ -1,9 +1,12 @@
 import random
 import time
-import logging
 
 import classificator
 from timer import Timer
+
+import logging
+
+logger = logging.getLogger("session")
 
 TIMER_INTERVAL = 0.6
 RESULT_THRESHOLD = 2
@@ -38,15 +41,15 @@ class Session:
             try:
                 if self.size != self.last_image.size:
                     self.size = self.last_image.size
-                    logging.info(self.size)
+                    logger.info(self.size)
 
                 self.bounds, model_id = self.get_bounds()
                 if classificator.predict(self.last_image, self.bounds, model_id):
                     self.res += 1
                 else:
                     self.res = 0
-            except Exception as err:
-                print(err)
+            except Exception:
+                logger.exception("failed to run classificator")
 
     async def update_state(self):
         try:
@@ -79,8 +82,8 @@ class Session:
 
             if self.state == State.ABORT or self.state == State.SUCCESS:
                 await self.close()
-        except Exception as err:
-            print(err)
+        except Exception:
+            logger.exception("Failed to change state")
 
     async def tick(self):
         if time.time() - self.state_start > TIMER_INTERVAL*2:
