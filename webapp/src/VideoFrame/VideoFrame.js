@@ -96,6 +96,8 @@ class VideoFrame extends React.PureComponent {
         };
 
         this.onMessage = this.onMessage.bind(this);
+
+        this.debugFlag = document.location.search.indexOf('?debug') !== -1;
     }
 
     onMessage(evt) {
@@ -177,11 +179,13 @@ class VideoFrame extends React.PureComponent {
         });
         this.videoElement.srcObject = stream;
 
-        pc.addEventListener('track', (evt) => {
-            if (evt.track.kind === 'video') {
-                this.videoElement.srcObject = evt.streams[0];
-            }
-        });
+        if (this.debugFlag) {
+            pc.addEventListener('track', (evt) => {
+                if (evt.track.kind === 'video') {
+                    this.videoElement.srcObject = evt.streams[0];
+                }
+            });
+        }
 
         pc
             .createOffer()
@@ -225,7 +229,7 @@ class VideoFrame extends React.PureComponent {
             <div className="VideoFrame">
                 <video ref={this.setVideoElement} className="VideoFrame__video"/>
                 <div className="VideoFrame__overlay">
-                    {/*{JSON.stringify(this.state, null, 2)}*/}
+                    { this.debugFlag && <pre>{ JSON.stringify(this.state, null, 4) }</pre> }
                     {this.renderOverlay()}
                 </div>
                 <div className="VideoFrame__bottom">
