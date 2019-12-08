@@ -10,6 +10,10 @@ import hand from './img/hand.png';
 import handOk from './img/hand-ok.png';
 
 const STEPS = {
+    connecting: {
+        step: 0,
+        text: 'Установка соединения',
+    },
     show_passport: {
         step: 1,
         text: 'Покажите паспорт',
@@ -87,8 +91,8 @@ class App extends React.PureComponent {
         }
 
         this.state = {
-            currentStage: 'show_passport',
-            step: 1,
+            currentStage: 'connecting',
+            step: 0,
         };
 
         this.onMessage = this.onMessage.bind(this);
