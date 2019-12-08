@@ -4,6 +4,8 @@ import Onboarding from '../Onboarding/Onboarding';
 import AwaitDecision from "../AwaitDecision/AwaitDecision";
 import Success from "../Success/Success";
 
+const DEFAULT_ROUTE = 'onboarding';
+
 const ROUTES = {
     'onboarding': Onboarding,
     'video-frame': VideoFrame,
@@ -15,7 +17,7 @@ class MinimakRouter extends React.PureComponent {
     constructor() {
         super();
         this.state = {
-            currentRoute: 'onboarding',
+            currentRoute: DEFAULT_ROUTE,
         };
 
         this.navigate = this.navigate.bind(this);
