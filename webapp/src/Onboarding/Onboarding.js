@@ -6,8 +6,14 @@ import tutorial3 from './img/tutorial-3.png';
 import tutorial4 from './img/tutorial-4.png';
 import cross from './img/cross.png'
 import Carousel from 'nuka-carousel';
+import ReactDOM from "react-dom";
+import VideoFrame from "../VideoFrame/VideoFrame";
 
 class Onboarding extends React.PureComponent {
+
+    btnClick() {
+        ReactDOM.render(<VideoFrame />, document.getElementById('root'));
+    }
 
     render() {
         return (
@@ -22,7 +28,7 @@ class Onboarding extends React.PureComponent {
                             />
                         </div>
                         <div className="Emptyspace">
-                        </div>
+                        </div>gi
                         <div className="BlackText">
                             <p>Теперь автокредит можно оформить онлайн!<br/><br/>Достаточно камеры смартфона</p>
                         </div>
@@ -69,7 +75,7 @@ class Onboarding extends React.PureComponent {
                         </div>
                         <div className="BlackText">
                             <p>После всех шагов осталось дождаться подтверждения - и можно получать машину</p>
-                            <div className="RedButton">
+                            <div className="RedButton" onClick={this.btnClick.bind(this)}>
                                 <p>Поехали!</p>
                             </div>
                         </div>
