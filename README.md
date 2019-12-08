@@ -52,6 +52,6 @@ python3 ./server.py
 
 # Запуск фррнтэнда
 cd ./webapp
-npm start run
+npm start
 ```
 
