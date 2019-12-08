@@ -102,6 +102,13 @@ class App extends React.PureComponent {
             return;
         }
 
+        if (newStage.startsWith("confidence ")) {
+            const conf = parseFloat(newStage.substring("confidence ".length))
+            this.setState({
+                confidence: conf
+            })
+        }
+
         if (['abort', 'success']) {
 
         }
@@ -212,7 +219,7 @@ class App extends React.PureComponent {
             <div className="VideoFrame">
                 <video ref={this.setVideoElement} className="VideoFrame__video"/>
                 <div className="VideoFrame__overlay">
-                    {JSON.stringify(this.state)}
+                    {JSON.stringify(this.state, null, 2)}
                     {this.renderOverlay()}
                 </div>
                 <div className="VideoFrame__bottom">
