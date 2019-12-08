@@ -146,7 +146,7 @@ def predict(image, bounds, model_id):
     # img.save("./" + str(max_prediction) + ".jpg")
 
     # 0 -> hand 1 -> no_hand
-    return idx == 0 and max_prediction > 0.8
+    return idx == 0 and max_prediction > 0.8, max_prediction
 
 # Прогрев tensorflow. НЕ УБИРАТЬ
 img = Image.open('./resources/image.jpg')

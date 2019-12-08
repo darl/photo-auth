@@ -26,7 +26,7 @@ class Session:
         self.last_image = None
         self.timer = Timer(TIMER_INTERVAL, self.tick)
         self.last_message = None
-        self.res = 0
+        self.success_predict_count = 0
         self.size = None
         self.bounds = None
         self.hands_count = 1
@@ -44,10 +44,11 @@ class Session:
                     logger.info(self.size)
 
                 self.bounds, model_id = self.get_bounds()
-                if classificator.predict(self.last_image, self.bounds, model_id):
-                    self.res += 1
+                predict, conf = classificator.predict(self.last_image, self.bounds, model_id)
+                if predict:
+                    self.success_predict_count += 1
                 else:
-                    self.res = 0
+                    self.success_predict_count = 0
             except Exception:
                 logger.exception("failed to run classificator")
 
@@ -59,8 +60,8 @@ class Session:
             if self.state.startswith("hand") and elapsed > State.HAND_TIMEOUT:
                 self.state = State.ABORT
 
-            if self.state != State.ABORT and self.res >= RESULT_THRESHOLD:
-                self.res = 0
+            if self.state != State.ABORT and self.success_predict_count >= RESULT_THRESHOLD:
+                self.success_predict_count = 0
                 self.state_start = time.time()
                 if self.state == State.SHOW_PASSPORT:
                     self.state = State.SHOW_PASSPORT_2
