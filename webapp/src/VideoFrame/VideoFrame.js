@@ -318,7 +318,7 @@ class App extends React.PureComponent {
     }
 
     renderBottomTitle() {
-        return 'Покажи пасспорт';
+        return STEPS[this.state.currentStage].text;
     }
 }
 
