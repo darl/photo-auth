@@ -36,19 +36,6 @@ class VideoTransformTrack(MediaStreamTrack):
                 left, top, right, bottom = self.session.bounds
                 img = cv2.rectangle(img, (left, top), (right, bottom), self.color, 1)
 
-            # show all active zones for css debugging
-            for pos in classificator.Position:
-                b, _ = classificator.get_bounds(self.session.last_image, pos)
-                left, top, right, bottom = b
-                is_passport = pos.value > 3
-
-                passport_color = (155, 0, 0)
-                hand_color = (155, 220, 0)
-                color = passport_color if is_passport else hand_color
-
-                if not is_passport:
-                    img = cv2.rectangle(img, (left + 1, top + 1), (right - 1, bottom - 1), color, 1)
-
             # rebuild a VideoFrame, preserving timing information
             new_frame = VideoFrame.from_ndarray(img, format="bgr24")
             new_frame.pts = frame.pts
