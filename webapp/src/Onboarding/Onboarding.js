@@ -22,58 +22,56 @@ class Onboarding extends React.PureComponent {
     render() {
         return (
             <div className="OnboardingContainer">
-                <Carousel heightMode={"first"} renderCenterLeftControls={false} renderCenterRightControls={false}>
-                    <div className="Onboarding">
-                        <div className="Onboarding__firstRow">
-                            <img className="Onboarding__img"
-                                 src={tutorial1}
-                            />
-                        </div>
-                        <div className="Onboarding__secondRow">
-                            <p>Теперь автокредит можно оформить онлайн!</p>
-                            <p>Достаточно камеры смартфона</p>
-                        </div>
-                    </div>
-                    <div className="Onboarding">
-                        <div className="Onboarding__firstRow">
-                            <img className="Onboarding__img"
-                                 src={tutorial2}
-                            />
-                        </div>
-                        <div className="Onboarding__secondRow">
-                            <p>Сначала поднесите паспорт к камере</p>
-                        </div>
-                    </div>
-                    <div className="Onboarding">
-                        <div className="Onboarding__firstRow">
-                            <img className="Onboarding__img"
-                                 src={tutorial3}
-                            />
-                        </div>
-                        <div className="Onboarding__secondRow">
-                            <p>Уберите песпорт и поставьте руки в позицию, отмеченную на экране</p>
-                            <p>Достаточно всего пару раз, чтобы мы убедились что Вы - это Вы</p>
-                        </div>
-                    </div>
-                    <div  className="Onboarding">
-                        <div className="Onboarding__firstRow">
-                            <img className="Onboarding__img"
-                                 src={tutorial4}
-                            />
-                        </div>
-                        <div className="Onboarding__secondRow">
-                            <p>После всех шагов осталось дождаться подтверждения - и можно получать машину</p>
-                            <div className="RedButton" onClick={ this.btnClick }>
-                                <p>Поехали!</p>
+                <div className="OnboardingCarousel">
+                    <Carousel heightMode={"first"} renderCenterLeftControls={false} renderCenterRightControls={false}>
+                        <div className="Onboarding">
+                            <div className="Onboarding__firstRow">
+                                <img className="Onboarding__img"
+                                    src={tutorial1}
+                                />
+                            </div>
+                            <div className="Onboarding__secondRow">
+                                <p>Теперь автокредит можно оформить онлайн!</p>
+                                <p>Достаточно камеры смартфона</p>
                             </div>
                         </div>
-                    </div>
-                </Carousel>
-                <div className="Cross">
-                    <img src={cross} width={40}/>
+                        <div className="Onboarding">
+                            <div className="Onboarding__firstRow">
+                                <img className="Onboarding__img"
+                                    src={tutorial2}
+                                />
+                            </div>
+                            <div className="Onboarding__secondRow">
+                                <p>Сначала поднесите паспорт к камере</p>
+                            </div>
+                        </div>
+                        <div className="Onboarding">
+                            <div className="Onboarding__firstRow">
+                                <img className="Onboarding__img"
+                                    src={tutorial3}
+                                />
+                            </div>
+                            <div className="Onboarding__secondRow">
+                                <p>Уберите песпорт и поместите руки в позицию, отмеченную на экране</p>
+                                <p>Достаточно всего пару раз, чтобы мы убедились что Вы - это Вы</p>
+                            </div>
+                        </div>
+                        <div  className="Onboarding">
+                            <div className="Onboarding__firstRow">
+                                <img className="Onboarding__img"
+                                    src={tutorial4}
+                                />
+                            </div>
+                            <div className="Onboarding__secondRow">
+                                <p>После всех шагов осталось дождаться подтверждения - и можно получать машину</p>
+                                <div className="RedButton" onClick={ this.btnClick }>
+                                    <p>Поехали!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </Carousel>
                 </div>
             </div>
-
         );
     }
 }

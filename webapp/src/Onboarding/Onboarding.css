@@ -5,7 +5,7 @@
 
 .Onboarding__firstRow {
     background: #e23535;
-    height: 50vh;
+    height: 40vh;
 
     border-bottom: 16px solid #fff;
 }
@@ -59,4 +59,8 @@
 .OnboardingContainer {
     background: #000;
     height: 100vh;
+}
+
+.OnboardingCarousel {
+    height: 90vh;
 }
