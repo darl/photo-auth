@@ -6,6 +6,7 @@ import VideoFrame from './VideoFrame/VideoFrame';
 import * as serviceWorker from './serviceWorker';
 import Onboarding from "./Onboarding/Onboarding";
 import AwaitDecision from "./AwaitDecision/AwaitDecision";
+import Success from "./Success/Success";
 
 ReactDOM.render(<Onboarding />, document.getElementById('root'));
 
