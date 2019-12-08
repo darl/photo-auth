@@ -82,13 +82,13 @@ const STEPS = {
     }
 }
 
-class App extends React.PureComponent {
+class VideoFrame extends React.PureComponent {
     constructor() {
         super();
 
         this.setVideoElement = elem => {
             this.videoElement = elem;
-        }
+        };
 
         this.state = {
             currentStage: 'connecting',
@@ -225,7 +225,7 @@ class App extends React.PureComponent {
             <div className="VideoFrame">
                 <video ref={this.setVideoElement} className="VideoFrame__video"/>
                 <div className="VideoFrame__overlay">
-                    {JSON.stringify(this.state, null, 2)}
+                    {/*{JSON.stringify(this.state, null, 2)}*/}
                     {this.renderOverlay()}
                 </div>
                 <div className="VideoFrame__bottom">
@@ -328,4 +328,4 @@ class App extends React.PureComponent {
     }
 }
 
-export default App;
+export default VideoFrame;
