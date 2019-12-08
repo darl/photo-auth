@@ -76,31 +76,65 @@ def middle(value):
     return int(value / 2)
 
 
-def top_left(width, height):
-    return left(width, height), top(width, height), middle(width), middle(height)
+CLIENT_HAND_SIZE = 114 * 1.3
+CLIENT_BOTTOM_BAR = 94
 
 
-def top_right(width, height):
-    return middle(width), top(width, height), right(width, height), middle(height)
+def top_left(width, height, client_ratio):
+    hand_size = (CLIENT_HAND_SIZE / client_ratio)
+
+    return (
+        int(0.05 * width),
+        int(0.10 * height),
+        int(0.05 * width + hand_size),
+        int(0.10 * height + hand_size)
+    )
 
 
-def bottom_left(width, height):
-    return left(width, height), middle(height), middle(width), bottom(width, height)
+def top_right(width, height, client_ratio):
+    hand_size = (CLIENT_HAND_SIZE / client_ratio)
+
+    return (
+        int(width - (0.05 * width + hand_size)),
+        int(0.10 * height),
+        int(width - 0.05 * width),
+        int(0.10 * height + hand_size)
+    )
 
 
-def bottom_right(width, height):
-    return middle(width), middle(height), right(width, height), bottom(width, height)
+def bottom_left(width, height, client_ratio):
+    hand_size = (CLIENT_HAND_SIZE / client_ratio)
+    bottom_bar = (CLIENT_BOTTOM_BAR / client_ratio)
+
+    return (
+        int(0.05 * width),
+        int(height - bottom_bar - 0.10 * height - hand_size),
+        int(0.05 * width + hand_size),
+        int(height - bottom_bar - 0.10 * height)
+    )
 
 
-def full(width, height):
+def bottom_right(width, height, client_ratio):
+    hand_size = (CLIENT_HAND_SIZE / client_ratio)
+    bottom_bar = (CLIENT_BOTTOM_BAR / client_ratio)
+
+    return (
+        int(width - (0.05 * width + hand_size)),
+        int(height - bottom_bar - 0.10 * height - hand_size),
+        int(width - 0.05 * width),
+        int(height - bottom_bar - 0.10 * height)
+    )
+
+
+def full(width, height, client_ratio):
     return left(width, height), top(width, height), right(width, height), bottom(width, height)
 
 
-def center_left(width, height):
+def center_left(width, height, client_ratio):
     return left(width, height), passport_top(width, height), middle(width), passport_bottom(width, height)
 
 
-def center_right(width, height):
+def center_right(width, height, client_ratio):
     return middle(width), passport_top(width, height), right(width, height), passport_bottom(width, height)
 
 
@@ -115,10 +149,10 @@ switcher = {
 }
 
 
-def get_bounds(image, position):
+def get_bounds(image, position, client_ratio=2.3):
     width, height = image.size
     bounds_fun = switcher.get(position, lambda: "Invalid state")
-    return bounds_fun(width, height), position.value > 3
+    return bounds_fun(width, height, client_ratio), position.value > 3
 
 
 def predict(image, bounds, model_id):
@@ -147,6 +181,7 @@ def predict(image, bounds, model_id):
 
     # 0 -> hand 1 -> no_hand
     return idx == 0 and max_prediction > 0.8, prediction[0]
+
 
 # Прогрев tensorflow. НЕ УБИРАТЬ
 img = Image.open('./resources/image.jpg')
