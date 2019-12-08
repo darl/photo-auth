@@ -115,10 +115,10 @@ switcher = {
 }
 
 
-def get_bounds(image, state):
+def get_bounds(image, position):
     width, height = image.size
-    bounds_fun = switcher.get(state, lambda: "Invalid state")
-    return bounds_fun(width, height), state.value > 3
+    bounds_fun = switcher.get(position, lambda: "Invalid state")
+    return bounds_fun(width, height), position.value > 3
 
 
 def predict(image, bounds, model_id):
