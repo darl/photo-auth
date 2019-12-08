@@ -114,7 +114,9 @@ class App extends React.PureComponent {
         }
 
         if (newStage === 'success') {
-            this.props.navigate('success');
+            setTimeout(() => {
+                this.props.navigate('success');
+            }, 1500)
         }
 
         if (!currentStage || !STEPS[newStage]) {
