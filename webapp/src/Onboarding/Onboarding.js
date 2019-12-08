@@ -10,9 +10,13 @@ import ReactDOM from "react-dom";
 import VideoFrame from "../VideoFrame/VideoFrame";
 
 class Onboarding extends React.PureComponent {
+    constructor() {
+        super();
+        this.btnClick = this.btnClick.bind(this);
+    }
 
     btnClick() {
-        ReactDOM.render(<VideoFrame />, document.getElementById('root'));
+        this.props.navigate('video-frame');
     }
 
     render() {
@@ -75,7 +79,7 @@ class Onboarding extends React.PureComponent {
                         </div>
                         <div className="BlackText">
                             <p>После всех шагов осталось дождаться подтверждения - и можно получать машину</p>
-                            <div className="RedButton" onClick={this.btnClick.bind(this)}>
+                            <div className="RedButton" onClick={ this.btnClick }>
                                 <p>Поехали!</p>
                             </div>
                         </div>
