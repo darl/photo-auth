@@ -4,3 +4,5 @@ __pycache__
 webapp/node_modules
 
 server/.DS_Store
+new_data_set
+.DS_Store

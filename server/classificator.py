@@ -11,8 +11,8 @@ logger = logging.getLogger("classificator")
 np.set_printoptions(suppress=True)
 
 # Load the model
-hand_model = tensorflow.keras.models.load_model('./resources/hand_model.h5')
-passport_model = tensorflow.keras.models.load_model('./resources/passport_model.h5')
+hand_model = tensorflow.keras.models.load_model('./resources/hand_model_better.h5')
+passport_model = tensorflow.keras.models.load_model('./resources/passport_model_better.h5')
 
 # Create the array of the right shape to feed into the keras model
 # The 'length' or number of images you can put into the array is
@@ -177,7 +177,8 @@ def predict(image, bounds, model_id):
     max_prediction = max(prediction)
     idx = prediction.index(max_prediction)
 
-    # img.save("./" + str(max_prediction) + ".jpg")
+    # print(prediction)
+    # image.save("./resources/new_data_set/void1/" + str(prediction[0])[:6] + ".jpg")
 
     # 0 -> hand 1 -> no_hand
     return idx == 0 and max_prediction > 0.8, prediction[0]
