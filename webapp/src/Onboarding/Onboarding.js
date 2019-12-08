@@ -21,63 +21,47 @@ class Onboarding extends React.PureComponent {
 
     render() {
         return (
-            <div>
+            <div className="OnboardingContainer">
                 <Carousel heightMode={"first"} renderCenterLeftControls={false} renderCenterRightControls={false}>
-                    <div>
-                        <div className="Onboarding">
-                            <img className="Illustration"
+                    <div className="Onboarding">
+                        <div className="Onboarding__firstRow">
+                            <img className="Onboarding__img"
                                  src={tutorial1}
-                                 width={234}
-                                 height={256}
                             />
                         </div>
-                        <div className="Emptyspace">
-                        </div>
-                        <div className="BlackText">
+                        <div className="Onboarding__secondRow">
                             <p>Теперь автокредит можно оформить онлайн!<br/><br/>Достаточно камеры смартфона</p>
                         </div>
                     </div>
-                    <div>
-                        <div className="Onboarding">
-                            <img className="Illustration"
+                    <div className="Onboarding">
+                        <div className="Onboarding__firstRow">
+                            <img className="Onboarding__img"
                                  src={tutorial2}
-                                 width={232}
-                                 height={281}
                             />
                         </div>
-                        <div className="Emptyspace">
-                        </div>
-                        <div className="BlackText">
+                        <div className="Onboarding__secondRow">
                             <p>Сначала поднесите паспорт к камере<br/><br/>
                                 После этого перенесите паспорт слева направо перед лицом</p>
                         </div>
                     </div>
-                    <div>
-                        <div className="Onboarding">
-                            <img className="Illustration"
+                    <div className="Onboarding">
+                        <div className="Onboarding__firstRow">
+                            <img className="Onboarding__img"
                                  src={tutorial3}
-                                 width={250}
-                                 height={242}
                             />
                         </div>
-                        <div className="Emptyspace">
-                        </div>
-                        <div className="BlackText">
+                        <div className="Onboarding__secondRow">
                             <p>Поставьте руки в позицию, отмеченную на экране<br/><br/>
                                 Достаточно всего пару раз, чтобы мы убедились что Вы - это Вы</p>
                         </div>
                     </div>
-                    <div>
-                        <div className="Onboarding">
-                            <img className="Illustration"
+                    <div  className="Onboarding">
+                        <div className="Onboarding__firstRow">
+                            <img className="Onboarding__img"
                                  src={tutorial4}
-                                 width={225}
-                                 height={248}
                             />
                         </div>
-                        <div className="Emptyspace">
-                        </div>
-                        <div className="BlackText">
+                        <div className="Onboarding__secondRow">
                             <p>После всех шагов осталось дождаться подтверждения - и можно получать машину</p>
                             <div className="RedButton" onClick={ this.btnClick }>
                                 <p>Поехали!</p>

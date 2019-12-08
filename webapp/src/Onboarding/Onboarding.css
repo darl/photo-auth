@@ -1,44 +1,36 @@
-body {
-    padding: 0;
-    background: black;
-    margin: 0;
-    font-family: Verdana;
+.Onboarding {
+    display: flex;
+    flex-direction: column;
 }
 
-.Onboarding {
+.Onboarding__firstRow {
     background: #e23535;
-    height: 382px;
+    height: 50vh;
+
+    border-bottom: 16px solid #fff;
 }
 
 .Cross {
     display: none;
-    position: absolute;
-    top: 0;
-    padding: 12px;
 }
 
-.Illustration {
+.Onboarding__img {
     display: block;
     padding: 80px 20px 0;
     margin: 0 auto;
+    height: 25vh;
 }
 
-.Emptyspace {
-    height: 16px;
-    background: #ffffff;
-}
-
-.BlackText {
+.Onboarding__secondRow {
     padding: 40px 10% 60px;
     background: #000000;
     font-style: normal;
     font-weight: normal;
     font-size: 20px;
     margin: 0 auto 20px;
-    display: block;
     text-align: center;
-    height: 169px;
     color: #FFFFFF;
+    height: 20vh;
 }
 
 .RedButton {
@@ -62,4 +54,9 @@ body {
     height: 8px;
     background: #ffffff;
     display: block;
+}
+
+.OnboardingContainer {
+    background: #000;
+    height: 100vh;
 }
