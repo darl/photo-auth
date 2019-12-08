@@ -1,0 +1,84 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Verdana;
+}
+
+.WhiteBgDecision {
+    background: #ffffff;
+    padding-bottom: 24px;
+}
+
+.RedBlockDecision {
+    background: #e23535;
+    height: 178px;
+    padding-bottom: 44px;
+}
+
+.WhiteTextDecision {
+    display: block;
+    position: absolute;
+    top: 64px;
+    left: 158px;
+    color: #FFFFFF;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+}
+
+.IllustrationDecision {
+    display: block;
+    position: absolute;
+    top: 64px;
+    left: 32px;
+}
+
+.WhiteBlockDecision {
+    position: relative;
+    top: -8px;
+    z-index: 2;
+    width: 285px;
+    height: 16px;
+    background: #ffffff;
+    margin: 0 auto;
+}
+
+.BlackTextBlockDecision {
+    position: relative;
+    top: -16px;
+    background: #000000;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 30px;
+    padding-top: 4px;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    height: 99px;
+    color: #FFFFFF;
+}
+
+.WhiteTextBlockDecision {
+    padding-left: 24px;
+    padding-right: 24px;
+    background: #ffffff;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    display: flex;
+    align-items: flex-end;
+    color: #000000;
+}
+
+.RedButtonDecision {
+    color: #ffffff;
+    padding: 1px;
+    background: #e23535;
+    font-size: 22px;
+    margin: 80px 70px 30px;
+    display: block;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #e23535;
+}

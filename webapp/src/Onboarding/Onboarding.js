@@ -28,7 +28,7 @@ class Onboarding extends React.PureComponent {
                             />
                         </div>
                         <div className="Emptyspace">
-                        </div>gi
+                        </div>
                         <div className="BlackText">
                             <p>Теперь автокредит можно оформить онлайн!<br/><br/>Достаточно камеры смартфона</p>
                         </div>
