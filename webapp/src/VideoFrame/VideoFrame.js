@@ -12,7 +12,7 @@ import handOk from './img/hand-ok.png';
 const STEPS = {
     show_passport: {
         step: 1,
-        text: 'Покажи паспорт',
+        text: 'Покажите паспорт',
         success: 'show_passport_ok',
     },
     show_passport_ok: {
@@ -106,11 +106,11 @@ class App extends React.PureComponent {
             const conf = parseFloat(newStage.substring("confidence ".length))
             this.setState({
                 confidence: conf
-            })
+            });
         }
 
-        if (['abort', 'success']) {
-
+        if (newStage === 'success') {
+            this.props.navigate('success');
         }
 
         if (!currentStage || !STEPS[newStage]) {
