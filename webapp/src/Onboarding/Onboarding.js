@@ -30,7 +30,8 @@ class Onboarding extends React.PureComponent {
                             />
                         </div>
                         <div className="Onboarding__secondRow">
-                            <p>Теперь автокредит можно оформить онлайн!<br/><br/>Достаточно камеры смартфона</p>
+                            <p>Теперь автокредит можно оформить онлайн!</p>
+                            <p>Достаточно камеры смартфона</p>
                         </div>
                     </div>
                     <div className="Onboarding">
@@ -40,8 +41,7 @@ class Onboarding extends React.PureComponent {
                             />
                         </div>
                         <div className="Onboarding__secondRow">
-                            <p>Сначала поднесите паспорт к камере<br/><br/>
-                                После этого перенесите паспорт слева направо перед лицом</p>
+                            <p>Сначала поднесите паспорт к камере</p>
                         </div>
                     </div>
                     <div className="Onboarding">
@@ -51,8 +51,8 @@ class Onboarding extends React.PureComponent {
                             />
                         </div>
                         <div className="Onboarding__secondRow">
-                            <p>Поставьте руки в позицию, отмеченную на экране<br/><br/>
-                                Достаточно всего пару раз, чтобы мы убедились что Вы - это Вы</p>
+                            <p>Уберите песпорт и поставьте руки в позицию, отмеченную на экране</p>
+                            <p>Достаточно всего пару раз, чтобы мы убедились что Вы - это Вы</p>
                         </div>
                     </div>
                     <div  className="Onboarding">
