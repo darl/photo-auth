@@ -69,7 +69,8 @@ class Session:
                 self.success_predict_count = 0
                 self.state_start = time.time()
                 if self.state == State.SHOW_PASSPORT:
-                    self.state = State.SHOW_PASSPORT_2
+                    # self.state = State.SHOW_PASSPORT_2
+                    self.state = self.next_random_hand()
                 elif self.state == State.SHOW_PASSPORT_2:
                     self.state = State.SHOW_PASSPORT_3
                 elif self.state == State.SHOW_PASSPORT_3:
@@ -94,9 +95,9 @@ class Session:
     async def tick(self):
         elapsed = time.time() - self.state_start
 
-        if elapsed > TIMER_INTERVAL * 2:
+        if elapsed > TIMER_INTERVAL * 3:
             self.update_resolution()
-        if elapsed > TIMER_INTERVAL * 4:
+        if elapsed > TIMER_INTERVAL * 6:
             await self.update_state(elapsed)
 
         self.timer = Timer(TIMER_INTERVAL, self.tick)
@@ -152,7 +153,7 @@ class State:
         HAND_TOP_LEFT, HAND_TOP_RIGHT, HAND_BOTTOM_LEFT, HAND_BOTTOM_RIGHT
     ]
 
-    HAND_TIMEOUT = 15
+    HAND_TIMEOUT = 1500
 
     ABORT = "abort"
     SUCCESS = "success"
