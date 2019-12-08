@@ -1,5 +1,6 @@
 body {
     padding: 0;
+    background: black;
     margin: 0;
     font-family: Verdana;
 }
@@ -10,6 +11,7 @@ body {
 }
 
 .Cross {
+    display: none;
     position: absolute;
     top: 0;
     padding: 12px;
@@ -23,6 +25,7 @@ body {
 
 .Emptyspace {
     height: 16px;
+    background: #ffffff;
 }
 
 .BlackText {
@@ -31,7 +34,7 @@ body {
     font-style: normal;
     font-weight: normal;
     font-size: 20px;
-    margin: 0 auto;
+    margin: 0 auto 20px;
     display: block;
     text-align: center;
     height: 169px;
