@@ -54,9 +54,17 @@ class Session:
                 else:
                     self.success_predict_count = 0
 
-                self.channel.send("confidence " + str(conf))
+                self.send_message("confidence " + str(conf))
             except Exception:
                 logger.exception("failed to run classificator")
+
+    def send_message(self, message):
+        if self.channel:
+            try:
+                self.channel.send(message)
+            except Exception:
+                logger.exception("Failed to send message to data channel")
+                pass
 
     async def update_state(self, elapsed):
         try:
@@ -83,7 +91,7 @@ class Session:
                         self.state = self.next_random_hand()
 
             if self.channel and self.last_message != self.state:
-                self.channel.send(self.state)
+                self.send_message(self.state)
                 self.last_message = self.state
                 self.bounds, _ = self.get_bounds()
 
