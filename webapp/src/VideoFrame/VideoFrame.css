@@ -98,23 +98,23 @@ body, html {
 .VideoFrame__hand_top_right, .VideoFrame__hand_top_right_ok {
     position: absolute;
     top: 10vh;
-    right: 5vw;
+    left: 5vw;
 }
 
 .VideoFrame__hand_top_left, .VideoFrame__hand_top_left_ok {
     position: absolute;
     top: 10vh;
-    left: 5vw;
+    right: 5vw;
 }
 
 .VideoFrame__hand_bottom_right, .VideoFrame__hand_bottom_right_ok {
     position: absolute;
     bottom: calc(10vh + 94px);
-    right: 5vw;
+    left: 5vw;
 }
 
 .VideoFrame__hand_bottom_left, .VideoFrame__hand_bottom_left_ok {
     position: absolute;
     bottom: calc(10vh + 94px);
-    left: 5vw;
+    right: 5vw;
 }
