@@ -12,7 +12,7 @@ import handOk from './img/hand-ok.png';
 const STEPS = {
     connecting: {
         step: 0,
-        text: 'Установка соединения',
+        text: 'Установка соединения...',
     },
     show_passport: {
         step: 1,
