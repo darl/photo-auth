@@ -34,7 +34,10 @@ class Session:
         self.state_start = time.time()
 
     def get_bounds(self):
-        return classificator.get_bounds(self.last_image, self.get_classificator_position(self.state))
+        position = self.get_classificator_position(self.state)
+        if position is None:
+            return None, None
+        return classificator.get_bounds(self.last_image, position)
 
     def update_resolution(self):
         if self.last_image:
@@ -49,6 +52,8 @@ class Session:
                     self.success_predict_count += 1
                 else:
                     self.success_predict_count = 0
+
+                self.channel.send("confidence " + str(conf))
             except Exception:
                 logger.exception("failed to run classificator")
 
