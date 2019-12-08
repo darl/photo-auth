@@ -1,5 +1,6 @@
 import random
 import time
+import asyncio
 
 import classificator
 from timer import Timer
@@ -57,9 +58,8 @@ class Session:
             except Exception:
                 logger.exception("failed to run classificator")
 
-    async def update_state(self):
+    async def update_state(self, elapsed):
         try:
-            elapsed = time.time() - self.state_start
             if self.state.startswith("show") and elapsed > State.SHOW_TIMEOUT:
                 self.state = State.ABORT
             if self.state.startswith("hand") and elapsed > State.HAND_TIMEOUT:
@@ -92,9 +92,12 @@ class Session:
             logger.exception("Failed to change state")
 
     async def tick(self):
-        if time.time() - self.state_start > TIMER_INTERVAL*2:
+        elapsed = time.time() - self.state_start
+
+        if elapsed > TIMER_INTERVAL * 2:
             self.update_resolution()
-            await self.update_state()
+        if elapsed > TIMER_INTERVAL * 4:
+            await self.update_state(elapsed)
 
         self.timer = Timer(TIMER_INTERVAL, self.tick)
 
@@ -127,7 +130,10 @@ class Session:
     async def close(self):
         if self.timer:
             self.timer.cancel()
-        await self.pc.close()
+        try:
+            await self.pc.close()
+        except asyncio.CancelledError:
+            pass
 
 
 class State:
